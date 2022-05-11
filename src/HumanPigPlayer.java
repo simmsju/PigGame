@@ -25,7 +25,7 @@ public class HumanPigPlayer extends PigPlayer {
      */
     public void beginTurn(int myScore, int opponentsScore) {
         System.out.println(getName() +", it is now your turn!");
-        System.out.println("\tYour score is "+myScore+", and your opponent's is " +opponentsScore+".");
+        System.out.println("Your score is "+myScore+", and your opponent's is " +opponentsScore+".");
     }
     /**
      * Should the player roll again? This method just asks the human at

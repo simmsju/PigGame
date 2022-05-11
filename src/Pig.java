@@ -1,3 +1,7 @@
+import java.sql.SQLOutput;
+import java.util.Scanner;
+import java.util.SortedMap;
+
 /**
  * This is the skeleton of the Pig game. It is your job to fill in the empty
  functions to create a functional game of pig.
@@ -8,7 +12,6 @@ class Pig {
     /**
      * The score needed to win a round.
      */
-    public static final int WINNING_SCORE = 100;
     public static void main(String[] args) {
 // intro, initialize players
         System.out.println("Welcome to Pig!");
@@ -27,6 +30,12 @@ class Pig {
 // report the final results
         reportFinalTally(roundsWon, human, opponent);
     }
+
+
+
+
+
+    public static final int WINNING_SCORE = 100;
 /**
  * Do one round, crediting the winner.
  * @param player1 the first player
@@ -35,13 +44,29 @@ class Pig {
  */
     private static boolean playRound(PigPlayer player1, PigPlayer player2)
     {
+        int turnNumber = 1;
+        int p1Score = 0;
+        int p2Score = 0;
+        while(p1Score < WINNING_SCORE && p2Score < WINNING_SCORE) {
+            p1Score += playTurn(player1, turnNumber, p1Score, p2Score);
+            if (p1Score > WINNING_SCORE) {
+                break;
+            }
+            p2Score += playTurn(player2, turnNumber, p2Score, p1Score);
+            turnNumber++;
+        }
+        if (p1Score > p2Score) {
+            System.out.println(player1.getName() + " wins that round!");
+            return true;
+        }
+        System.out.println(player2.getName() + " wins this round!\n");
+        return false;
         // This function must do the following:
         // 1. Enter a loop, with player 1 taking a turn, then player 2.
         // 2. Keep track of each player's score and the turn number.
         // 3. When a player wins, print the winner, and break out of the loop.
         // 4. Return a boolean value
 
-        return false;
     }
 /**
  * Play a single turn, returning how many points the player got.
@@ -52,6 +77,21 @@ class Pig {
  * @return the points that the player won
  */
     private static int playTurn(PigPlayer player, int turnNum, int score, int opponentsScore) {
+        player.beginTurn(score, opponentsScore);
+        int rollNum = 1;
+        int points = 0;
+        int rand;
+        while (player.decideIfShouldRoll(turnNum, rollNum, points, score, opponentsScore)) {
+            System.out.println();
+            rand = (int)(Math.random() * 6) + 1;
+            if (rand == 1) {
+                System.out.println(player.getName() + " Rolled a 1.\n0 points earned.\n");
+                return 0;
+            }
+            points += rand;
+            System.out.println(player.getName() + " rolled a " + rand);
+            rollNum++;
+        }
         // This function must do the following:
         // 1. Call the player's beginTurn() method.
         // 2. Loop so long as the player wants to continue rolling.
@@ -61,7 +101,7 @@ class Pig {
         // 4. If the loop ends, return the pool's value.
         // 5. Be sure to print events frequently, so the human player can see what's happening!
 
-        return 0;
+        return points;
     }
     /**
      * Deliver a final report, indicating the overall winner after all
@@ -77,7 +117,12 @@ class Pig {
         // This function must do the following:
         // 1. Print out both player's scores.
         // 2. Indicate who the winner was (or if there was a tie).
-
-
+        if (roundsWon[0] > roundsWon[1]) {
+            System.out.println(player1.getName() + " wins! The score was " + roundsWon[1] + "-" + roundsWon[0] + ".");
+        } else if (roundsWon[0] < roundsWon[1]) {
+            System.out.println(player2.getName() + " wins! The score was " + roundsWon[1] + "-" + roundsWon[0] + ".");
+        } else {
+            System.out.println("The game was a tie! The score was " + roundsWon[1] + "-" + roundsWon[0] + ".");
+        }
     }
 }
